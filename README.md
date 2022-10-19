@@ -5,7 +5,7 @@ https://doi.org/10.48550/arXiv.2107.07752
 
 ## Installation
 
-NeXtQSM requires `tensorflow` and `packaging` as a dependencies. It also requires a set of training weights for inference (~150 MB).
+NeXtQSM requires `tensorflow` and `packaging` as dependencies. It also requires a set of training weights for inference (~150 MB).
 
 Example setup using conda:
 
