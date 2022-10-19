@@ -5,6 +5,8 @@ https://doi.org/10.48550/arXiv.2107.07752
 
 ## Download weights
 
+Run the following from inside the repository folder to add the weights:
+
 ```bash
 pip install cloudstor
 python -c "import cloudstor; cloudstor.cloudstor(url='https://cloudstor.aarnet.edu.au/plus/s/5OehmoRrTr9XlS5', password='').download('', 'nextqsm-weights.tar')"
