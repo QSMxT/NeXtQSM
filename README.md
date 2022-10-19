@@ -28,3 +28,11 @@ tar xf nextqsm-weights.tar -C checkpoints/
 rm nextqsm-weights.tar
 ```
 
+## Run
+
+Run NeXtQSM using the following command, providing an unwrapped frequency map (Hz) and brain mask as inputs in the NIfTI file format:
+
+```bash
+python predict_all.py [phase_file] [mask_file] [out_file]
+```
+
