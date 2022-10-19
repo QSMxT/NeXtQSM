@@ -1,0 +1,2 @@
+model_checkpoint_path: "zdir_calc-HR-vn-rmse-weights"
+all_model_checkpoint_paths: "zdir_calc-HR-vn-rmse-weights"
