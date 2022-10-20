@@ -75,15 +75,13 @@ if __name__ == "__main__":
         'out_file',
         help='QSM output'
     )
-    parser.add_argument(
-        '--checkpoint',
-        default='../checkpoints/zdir_calc-HR',
-        help='A checkpoint for the pretrained net'        
-    )
     
     args = parser.parse_args()
     
-    ckp_folder, ckp_name = os.path.split(Path(args.checkpoint))
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    ckp_folder = os.path.join(this_dir, "..", "checkpoints")
+    ckp_name = "zdir_calc-HR"
+    
     print("phase: " + args.phase)
     print("out_file: " + args.out_file)
     
