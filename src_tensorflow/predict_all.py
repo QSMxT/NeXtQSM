@@ -17,6 +17,7 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file):
     params = misc.load_json(ckp_path + "params.json")
 
     if source_path is None:
+        print("Loading 2019 simulated data...")
         datasets = data_loader.get_QSM_2019_simulated(base_path + "dataset/QSM_2019_Simulated/")
     else:
         datasets, meta = data_loader.load_testing_volume({"source": source_path, "mask": mask_path})
