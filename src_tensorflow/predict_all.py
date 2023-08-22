@@ -11,7 +11,7 @@ import argparse
 import os
 from pathlib import Path
 
-def main(ckp_path, ckp_name, source_path, mask_path, out_file):
+def main(ckp_path, ckp_name, source_path, mask_path, out_file, b_vec):
     base_path = misc.get_base_path()
     #ckp_path = base_path + ckp_path
     params = misc.load_json(ckp_path + "params.json")
@@ -20,6 +20,7 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file):
         print("Loading 2019 simulated data...")
         datasets = data_loader.get_QSM_2019_simulated(base_path + "dataset/QSM_2019_Simulated/")
     else:
+        print(f"Loading phase data from {source_path}, mask data from {mask_path} ...")
         datasets, meta = data_loader.load_testing_volume({"source": source_path, "mask": mask_path})
         datasets[list(datasets.keys())[0]][0]["freq"] = datasets[list(datasets.keys())[0]][0]["source"]
         datasets[list(datasets.keys())[0]][0]["chi"] = datasets[list(datasets.keys())[0]][0]["source"]
@@ -39,7 +40,7 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file):
     for key in datasets:
 
         # Kernel
-        b_vec, voxel_size = qsm.get_kernel_features(key)
+        voxel_size = meta['header'].get_zooms()
         op = qsm.QSM(voxel_size=voxel_size, b_vec=b_vec)
         kernels[key] = op.get_dipole_kernel_fourier(datasets[key][0]["source"].shape[1:-1])
 
@@ -60,6 +61,7 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file):
 
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser(
         description="NeXtQSM: Deep Learning QSM Algorithm",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
@@ -89,8 +91,5 @@ if __name__ == "__main__":
     ckp_folder = os.path.join(this_dir, "..", "checkpoints")
     ckp_name = "zdir_calc-HR"
     
-    print("phase: " + args.phase)
-    print("out_file: " + args.out_file)
     
-    main(str(ckp_folder + "/"), str(ckp_name), str(Path(args.phase)), str(Path(args.mask)), str(Path(args.out_file)))
-
+    main(str(ckp_folder + "/"), str(ckp_name), str(Path(args.phase)), str(Path(args.mask)), str(Path(args.out_file)), args.b_vec)
