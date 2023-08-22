@@ -53,6 +53,7 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file):
             if "pad_added" in meta:
                 bf_logits = misc.remove_padding(bf_logits, meta["orig_shape"], meta["pad_added"])
                 vn_logits = misc.remove_padding(vn_logits, meta["orig_shape"], meta["pad_added"])
+            print(f'Save results as {out_file}')
             nib.save(nib.Nifti1Image(vn_logits[0, :, :, :, 0], meta["affine"], meta["header"]), out_file)
             nib.save(nib.Nifti1Image(bf_logits[0, :, :, :, 0], meta["affine"], meta["header"]), out_file.replace(".nii.gz", "") + "_BF.nii.gz")
 
@@ -73,7 +74,12 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         'out_file',
-        help='QSM output'
+        help='QSM output end with .nii.gz'
+    )
+    parser.add_argument(
+        '--b_vec', nargs=3, type=float,
+        default=(0, 0, 1),
+        help='B vector, set to axial coordinate by default'
     )
     
     args = parser.parse_args()
