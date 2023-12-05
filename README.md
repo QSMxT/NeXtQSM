@@ -22,8 +22,8 @@ conda install tensorflow packaging
 Run the following from inside the repository folder to add the weights:
 
 ```bash
-pip install cloudstor
-python -c "import cloudstor; cloudstor.cloudstor(url='https://cloudstor.aarnet.edu.au/plus/s/5OehmoRrTr9XlS5', password='').download('', 'nextqsm-weights.tar')"
+pip install osfclient
+python -m osfclient -p zqfdc fetch nextqsm-weights.tar nextqsm-weights.tar
 tar xf nextqsm-weights.tar -C checkpoints/
 rm nextqsm-weights.tar
 ```
