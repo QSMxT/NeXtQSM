@@ -20,7 +20,7 @@ class QSM:
 
         r2 = np.power(rx, 2) + np.power(ry, 2) + np.power(rz, 2)
 
-        kernel = 1. / float(3.) - np.divide(np.power(rx * self.b_vec[0] + ry * self.b_vec[1] + rz * self.b_vec[2], 2), r2 + np.finfo(np.float).eps)
+        kernel = 1. / float(3.) - np.divide(np.power(rx * self.b_vec[0] + ry * self.b_vec[1] + rz * self.b_vec[2], 2), r2 + np.finfo(np.float32).eps)
 
         return np.float32(kernel)
 
