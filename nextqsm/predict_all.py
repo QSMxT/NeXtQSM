@@ -99,14 +99,19 @@ def download_weights():
         
 
 def cli_main():
+    download_weights_only = False
     if '--download_weights' in sys.argv:
         parser = argparse.ArgumentParser(description="Download weights for NeXtQSM.")
         parser.add_argument('--download_weights', action='store_true', help='Only download the weights and exit')
         args = parser.parse_args()
         
         if args.download_weights:
-            download_weights()
-            exit()
+            download_weights_only = True
+
+    download_weights()
+
+    if download_weights_only:
+        exit()
     
     parser = argparse.ArgumentParser(
         description="NeXtQSM: Deep Learning QSM Algorithm",
