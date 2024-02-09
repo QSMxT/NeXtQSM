@@ -27,6 +27,6 @@ nextqsm --download_weights
 Run NeXtQSM using the following command, providing an unwrapped frequency map (unitless and scaled to ppm) and brain mask as inputs in the NIfTI file format:
 
 ```bash
-python predict_all.py [phase_file] [mask_file] [out_file]
+nextqsm [phase_file] [mask_file] [out_file]
 ```
 
