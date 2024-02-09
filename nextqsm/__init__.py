@@ -1,0 +1,1 @@
+import nextqsm.predict_all

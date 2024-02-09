@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-from tf_utils import MetricsManager
-from processing import qsm
+from nextqsm.tf_utils import MetricsManager
+from nextqsm.processing import qsm
 
 
 class Solver:

@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-import tensorflow as tf
 import numpy as np
 import nibabel as nib
-
-from tf_utils import UNet, misc
-from models import varnet, solver_all
-from processing import data_loader, qsm
+import osfclient
+import tarfile
 
 import argparse
 import os
 from pathlib import Path
 
 def main(ckp_path, ckp_name, source_path, mask_path, out_file, b_vec):
+    import tensorflow as tf
+    from nextqsm.tf_utils import UNet, misc
+    from nextqsm.models import varnet, solver_all
+    from nextqsm.processing import data_loader, qsm
+
     base_path = misc.get_base_path()
     #ckp_path = base_path + ckp_path
     params = misc.load_json(ckp_path + "params.json")
@@ -60,7 +62,41 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file, b_vec):
             nib.save(nib.Nifti1Image(bf_logits[0, :, :, :, 0], meta["affine"], meta["header"]), out_file.replace(".nii.gz", "") + "_BF.nii.gz")
 
 
-if __name__ == "__main__":
+def download_weights():
+    current_file_path = os.path.abspath(__file__)
+    package_root = os.path.dirname(current_file_path)
+    checkpoints_dir = os.path.join(package_root, 'checkpoints')
+    checkpoint_file_path = os.path.join(checkpoints_dir, 'checkpoint')
+
+    weights_exist = True
+    if os.path.exists(checkpoint_file_path):
+        with open(checkpoint_file_path, 'r') as f:
+            content = f.readlines()
+        
+        for line in content:
+            checkpoint_name = line.split('"')[1]
+            weights_exist &= any(fname.startswith(checkpoint_name) for fname in os.listdir(checkpoints_dir) if os.path.isfile(os.path.join(checkpoints_dir, fname)))
+    
+    if not weights_exist:
+        print('Downloading NeXtQSM weights...')
+        osf = osfclient.OSF()
+        osf_project = osf.project("zqfdc")
+        osf_file = list(osf_project.storage().files)[0]
+        tar_path = 'nextqsm-weights.tar'
+        with open(tar_path, 'wb') as fpr:
+            osf_file.write_to(fpr)
+
+        print("Extracting NeXtQSM weights...")
+        with tarfile.open(tar_path, 'r') as tar:
+            tar.extractall(path=checkpoints_dir)
+        os.remove(tar_path)
+
+        print("Weights downloaded and extracted successfully.")
+    else:
+        print(f"NeXtQSM weights found in {checkpoints_dir}.")
+        
+
+def cli_main():
     
     parser = argparse.ArgumentParser(
         description="NeXtQSM: Deep Learning QSM Algorithm",
@@ -88,7 +124,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    ckp_folder = os.path.join(this_dir, "..", "checkpoints")
+    ckp_folder = os.path.join(this_dir, "checkpoints")
     ckp_name = "zdir_calc-HR"
     
     

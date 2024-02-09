@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from tf_utils.blocks.cnn_block import CNN
+from nextqsm.tf_utils.blocks.cnn_block import CNN
 
 
 class UNet(tf.keras.Model):

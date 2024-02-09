@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from tf_utils import UNet, misc
+from nextqsm.tf_utils import UNet, misc
 
 
 class VarNet(tf.keras.Model):

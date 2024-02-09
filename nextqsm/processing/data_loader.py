@@ -2,7 +2,7 @@ import numpy as np
 import nibabel as nib
 import tensorflow as tf
 
-from tf_utils import misc
+from nextqsm.tf_utils import misc
 
 def load_testing_volume(paths):
     data, meta = {}, {}
