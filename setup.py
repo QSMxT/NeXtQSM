@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="nextqsm",
     long_description="NeXtQSM is a complete deep learning pipeline for data-consistent quantitative susceptibility mapping trained with hybrid data",
-    version="1.0.3",
+    version="1.0.4",
     packages=find_packages(),
     package_dir={'nextqsm': 'nextqsm'},
     package_data={
