@@ -6,6 +6,8 @@ import tarfile
 
 import argparse
 import os
+import sys
+
 from pathlib import Path
 
 def main(ckp_path, ckp_name, source_path, mask_path, out_file, b_vec):
@@ -97,6 +99,14 @@ def download_weights():
         
 
 def cli_main():
+    if '--download_weights' in sys.argv:
+        parser = argparse.ArgumentParser(description="Download weights for NeXtQSM.")
+        parser.add_argument('--download_weights', action='store_true', help='Only download the weights and exit')
+        args = parser.parse_args()
+        
+        if args.download_weights:
+            download_weights()
+            exit()
     
     parser = argparse.ArgumentParser(
         description="NeXtQSM: Deep Learning QSM Algorithm",
