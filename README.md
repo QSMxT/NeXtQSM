@@ -1,34 +1,28 @@
 # NeXtQSM
+
 A complete *pre-trained* deep learning pipeline for data-consistent quantitative susceptibility mapping trained with hybrid data.
 
-https://doi.org/10.48550/arXiv.2107.07752
+Cognolato, F., O'Brien, K., Jin, J., Robinson, S., Laun, F. B., Barth, M., & Bollmann, S. (2023). NeXtQSM—A complete deep learning pipeline for data-consistent Quantitative Susceptibility Mapping trained with hybrid data. *Medical Image Analysis*, 84, 102700. https://doi.org/10.1016/j.media.2022.102700.
 
 ## Installation
 
-NeXtQSM requires `tensorflow` and `packaging` as dependencies. It also requires a set of training weights for inference (~150 MB).
-
-Example setup using conda:
+NeXtQSM is available via pip:
 
 ```bash
-git clone https://github.com/QSMxT/NeXtQSM.git nextqsm
-cd nextqsm/
-conda create --name nextqsm python=3.8
-conda activate nextqsm
-conda install tensorflow packaging
+pip install nextqsm
 ```
 
-### Download weights
+## Downloading weights
 
-Run the following from inside the repository folder to add the weights:
+NeXtQSM requires a set of training weights for inference (~150 MB) which are automatically downloaded when you run NeXtQSM on a dataset.
+
+You can also manually download the weights using:
 
 ```bash
-pip install osfclient
-python -m osfclient -p zqfdc fetch nextqsm-weights.tar nextqsm-weights.tar
-tar xf nextqsm-weights.tar -C checkpoints/
-rm nextqsm-weights.tar
+nextqsm --download_weights
 ```
 
-## Run
+## Usage
 
 Run NeXtQSM using the following command, providing an unwrapped frequency map (unitless and scaled to ppm) and brain mask as inputs in the NIfTI file format:
 
