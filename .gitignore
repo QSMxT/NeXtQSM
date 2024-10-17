@@ -132,5 +132,5 @@ dmypy.json
 .pyre/
 
 # Weights
-checkpoints/zdir_calc*
+nextqsm/checkpoints/zdir_calc*
 nextqsm-weights.tar
