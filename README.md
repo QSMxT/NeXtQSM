@@ -6,6 +6,12 @@ Cognolato, F., O'Brien, K., Jin, J., Robinson, S., Laun, F. B., Barth, M., & Bol
 
 ## Installation
 
+Create a conda environment. Python version **3.8** is recommended, higher versions might be incompatible:  
+```bash
+conda create -n nextqsm python=3.8 
+conda activate nextqsm 
+```
+
 NeXtQSM is available via pip:
 
 ```bash
