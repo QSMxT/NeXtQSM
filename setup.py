@@ -12,7 +12,9 @@ setup(
     install_requires=[
         "tensorflow",
         "packaging",
-        "osfclient"
+        "osfclient",
+        "nibabel>=5.2.0",
+        "numpy"
     ],
     entry_points={
         'console_scripts': [
