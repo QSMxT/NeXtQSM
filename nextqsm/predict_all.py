@@ -32,12 +32,25 @@ def main(ckp_path, ckp_name, source_path, mask_path, out_file, b_vec):
     # BF
     bf_network = UNet(1, params["n_layers"], params["starting_filters"], 3, params["kernel_initializer"], params["batch_norm"],
                       0., misc.get_act_function(params["act_func"]), params["conv_per_layer"], False, False, None)
-    bf_network.load_weights(ckp_path + "zdir_calc-HRbf-rmse-weights")
+    dummy = tf.zeros((1, 64, 64, 64, 1))
+    bf_network(dummy, training=False)
+    bf_h5 = ckp_path + "zdir_calc-HRbf-rmse-weights.weights.h5"
+    bf_legacy = ckp_path + "zdir_calc-HRbf-rmse-weights"
+    bf_network.load_weights(bf_h5 if os.path.exists(bf_h5) else bf_legacy)
     bf_network.summary((64, 64, 64, 1))
 
     # VN
     vn = varnet.VarNet(params)
-    vn.load_weights(ckp_path + "zdir_calc-HR-vn-rmse-weights")
+    vn(dummy, training=False)
+    vn_h5 = ckp_path + "zdir_calc-HR-vn-nets.weights.h5"
+    vn_legacy = ckp_path + "zdir_calc-HR-vn-rmse-weights"
+    if os.path.exists(vn_h5):
+        vn.nets.load_weights(vn_h5)
+        lambdas = np.load(ckp_path + "zdir_calc-HR-vn-lambdas.npy")
+        for i, l in enumerate(lambdas):
+            vn.lambdas[i].assign(l)
+    else:
+        vn.load_weights(vn_legacy)
 
     slv = solver_all.Solver(params)
     kernels = {}
@@ -70,15 +83,15 @@ def download_weights():
     checkpoints_dir = os.path.join(package_root, 'checkpoints')
     checkpoint_file_path = os.path.join(checkpoints_dir, 'checkpoint')
 
-    weights_exist = True
-    if os.path.exists(checkpoint_file_path):
-        with open(checkpoint_file_path, 'r') as f:
-            content = f.readlines()
-        
-        for line in content:
-            checkpoint_name = line.split('"')[1]
-            weights_exist &= any(fname.startswith(checkpoint_name) for fname in os.listdir(checkpoints_dir) if os.path.isfile(os.path.join(checkpoints_dir, fname)))
-    
+    expected_files = [
+        'zdir_calc-HRbf-rmse-weights.weights.h5',
+        'zdir_calc-HR-vn-nets.weights.h5',
+        'zdir_calc-HR-vn-lambdas.npy',
+    ]
+    weights_exist = all(
+        os.path.isfile(os.path.join(checkpoints_dir, f)) for f in expected_files
+    )
+
     if not weights_exist:
         print('Downloading NeXtQSM weights...')
         osf = osfclient.OSF()
