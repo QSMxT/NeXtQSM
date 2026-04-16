@@ -30,6 +30,7 @@ jobs:
 
     - name: Download weights
       run: nextqsm --download_weights
+      continue-on-error: true
 
     - name: Run tests
       run: python -m pytest nextqsm/tests/test_nextqsm.py -v
