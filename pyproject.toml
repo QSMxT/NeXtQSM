@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nextqsm"
+dynamic = ["version"]
+description = "NeXtQSM is a complete deep learning pipeline for data-consistent quantitative susceptibility mapping trained with hybrid data"
+requires-python = ">=3.8"
+dependencies = [
+    "tensorflow",
+    "packaging",
+    "osfclient",
+    "nibabel>=5.2.0",
+    "numpy",
+]
+
+[project.scripts]
+nextqsm = "nextqsm.predict_all:cli_main"
+
+[tool.setuptools.packages.find]
+
+[tool.setuptools.package-data]
+nextqsm = ["checkpoints/checkpoint", "checkpoints/params.json"]
+
+[tool.setuptools_scm]
