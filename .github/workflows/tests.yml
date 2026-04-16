@@ -24,9 +24,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade pip setuptools
         pip install -e .
-        pip install pytest setuptools qsm-forward
+        pip install pytest qsm-forward
 
     - name: Download weights
       run: nextqsm --download_weights

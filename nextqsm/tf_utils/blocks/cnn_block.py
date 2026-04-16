@@ -25,7 +25,7 @@ class CNN(tf.keras.Model):
         self.parts.append(activation()) if activation is not None else None
         self.parts.append(tf.keras.layers.Dropout(dropout)) if dropout > 0. else None
 
-    def call(self, x, training):
+    def call(self, x, training=False):
         for layer in self.parts:
             x = layer(x, training=training)
         return x

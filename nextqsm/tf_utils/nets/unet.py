@@ -52,7 +52,7 @@ class UNet(tf.keras.Model):
 
         self.last_conv = CNN(n_classes, 3, kernel_initializer=init, batch_norm=None, dropout=0., activation=None)
 
-    def call(self, x, training):
+    def call(self, x, training=False):
 
         """
             Encoder

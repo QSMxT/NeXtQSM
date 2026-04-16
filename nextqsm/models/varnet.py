@@ -21,5 +21,5 @@ class VarNet(tf.keras.Model):
 
         return nets, lambdas
 
-    def call(self, x, training):
+    def call(self, x, training=False):
         return self.nets(x, training=training)
