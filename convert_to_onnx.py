@@ -49,10 +49,11 @@ def convert_models(checkpoint_dir, output_dir, input_shape=(64, 64, 64)):
     dummy_input = tf.zeros((1, *input_shape, 1), dtype=tf.float32)
     _ = bf_network(dummy_input, training=False)
 
-    # Load weights
-    bf_weights_path = os.path.join(checkpoint_dir, "zdir_calc-HRbf-rmse-weights")
-    bf_network.load_weights(bf_weights_path)
-    print(f"Loaded BF weights from {bf_weights_path}")
+    # Load weights (prefer H5 format, fall back to legacy checkpoint)
+    bf_h5 = os.path.join(checkpoint_dir, "zdir_calc-HRbf-rmse-weights.weights.h5")
+    bf_legacy = os.path.join(checkpoint_dir, "zdir_calc-HRbf-rmse-weights")
+    bf_network.load_weights(bf_h5 if os.path.exists(bf_h5) else bf_legacy)
+    print(f"Loaded BF weights from {bf_h5 if os.path.exists(bf_h5) else bf_legacy}")
     bf_network.summary((*input_shape, 1))
 
     # Convert to ONNX
@@ -74,10 +75,19 @@ def convert_models(checkpoint_dir, output_dir, input_shape=(64, 64, 64)):
     # Build model
     _ = vn_network(dummy_input, training=False)
 
-    # Load weights
-    vn_weights_path = os.path.join(checkpoint_dir, "zdir_calc-HR-vn-rmse-weights")
-    vn_network.load_weights(vn_weights_path)
-    print(f"Loaded VN weights from {vn_weights_path}")
+    # Load weights (prefer H5 format, fall back to legacy checkpoint)
+    vn_h5 = os.path.join(checkpoint_dir, "zdir_calc-HR-vn-nets.weights.h5")
+    vn_legacy = os.path.join(checkpoint_dir, "zdir_calc-HR-vn-rmse-weights")
+    if os.path.exists(vn_h5):
+        vn_network.nets.load_weights(vn_h5)
+        lambdas_npy = np.load(os.path.join(checkpoint_dir, "zdir_calc-HR-vn-lambdas.npy"))
+        for i, l in enumerate(lambdas_npy):
+            vn_network.lambdas[i].assign(l)
+        print(f"Loaded VN weights from {vn_h5}")
+    else:
+        vn_network.load_weights(vn_legacy)
+        lambdas_npy = np.array([l.numpy() for l in vn_network.lambdas])
+        print(f"Loaded VN weights from {vn_legacy}")
 
     # Convert to ONNX
     vn_onnx_path = os.path.join(output_dir, "nextqsm_vn.onnx")
@@ -90,9 +100,23 @@ def convert_models(checkpoint_dir, output_dir, input_shape=(64, 64, 64)):
     )
     print(f"Saved VN ONNX model to {vn_onnx_path}")
 
+    # === Export VarNet lambdas and params ===
+    import json
+    lambdas_path = os.path.join(output_dir, "nextqsm_lambdas.json")
+    with open(lambdas_path, 'w') as f:
+        json.dump({"lambdas": lambdas_npy.tolist()}, f)
+    print(f"Saved lambdas to {lambdas_path}")
+
+    params_path = os.path.join(output_dir, "nextqsm_params.json")
+    with open(params_path, 'w') as f:
+        json.dump({"vn_n_steps": params["vn_n_steps"], "vn_dt_loss": params["vn_dt_loss"]}, f)
+    print(f"Saved params to {params_path}")
+
     print("\n=== Conversion Complete ===")
     print(f"BF model: {bf_onnx_path}")
     print(f"VN model: {vn_onnx_path}")
+    print(f"Lambdas:  {lambdas_path}")
+    print(f"Params:   {params_path}")
 
     # Print file sizes
     bf_size = os.path.getsize(bf_onnx_path) / (1024 * 1024)
