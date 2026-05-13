@@ -134,3 +134,4 @@ dmypy.json
 # Weights
 nextqsm/checkpoints/zdir_calc*
 nextqsm-weights.tar
+onnx_models/

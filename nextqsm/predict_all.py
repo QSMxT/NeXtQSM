@@ -96,8 +96,16 @@ def download_weights():
         print('Downloading NeXtQSM weights...')
         osf = osfclient.OSF()
         osf_project = osf.project("zqfdc")
-        osf_file = list(osf_project.storage().files)[0]
-        tar_path = 'nextqsm-weights.tar'
+        tar_name = 'nextqsm-weights.tar'
+        osf_file = next(
+            (f for f in osf_project.storage().files if f.name == tar_name),
+            None
+        )
+        if osf_file is None:
+            raise RuntimeError(
+                f"Could not find '{tar_name}' in OSF project zqfdc"
+            )
+        tar_path = os.path.join(checkpoints_dir, tar_name)
         with open(tar_path, 'wb') as fpr:
             osf_file.write_to(fpr)
 
